@@ -19,7 +19,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 
-import scanner.Scanner;
+import scanner.ScanMe;
 
 import java.awt.GridBagLayout;
 import javax.swing.JTextField;
@@ -30,9 +30,12 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
+import symbolTable.*;
 
 public class DriverWindow extends JFrame {
 
@@ -64,8 +67,8 @@ public class DriverWindow extends JFrame {
 	public DriverWindow() {
 		//file chooser 
 		final JFileChooser chooser = new JFileChooser();
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("jpg", "gif");
-		chooser.setFileFilter(filter);
+		//FileNameExtensionFilter filter = new FileNameExtensionFilter(".txt", "gif");
+		//chooser.setFileFilter(filter);
 		
 		
 		setLocationRelativeTo(null);	
@@ -100,6 +103,13 @@ public class DriverWindow extends JFrame {
 		btnBrowseFile.setBounds(12, 117, 117, 25);
 		contentPane.add(btnBrowseFile);
 		JButton btnStart = new JButton("Start");
+		btnStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SymbolTable st = new SymbolTable();
+				ScanMe scan = new ScanMe(sourceFile);
+				//scan.read();
+			}
+		});
 		btnStart.setBounds(12, 149, 117, 25);
 		contentPane.add(btnStart);
 		
@@ -114,7 +124,7 @@ public class DriverWindow extends JFrame {
 	private void openFileStream(String absolutePath) {
 		// TODO Auto-generated method stub
 		try {
-			sourceFile = new FileReader(absolutePath);
+			sourceFile = new FileReader(new File(absolutePath));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
