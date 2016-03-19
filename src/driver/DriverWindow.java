@@ -106,7 +106,9 @@ public class DriverWindow extends JFrame {
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SymbolTable st = new SymbolTable();
-				ScanMe scan = new ScanMe(sourceFile);
+				ScanMe scan = new ScanMe(sourceFile,st);
+				Administration admin = new Administration(scan);
+				admin.start();
 				//scan.read();
 			}
 		});

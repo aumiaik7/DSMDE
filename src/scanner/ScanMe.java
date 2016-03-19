@@ -9,18 +9,22 @@ package scanner;
 import java.io.FileReader;
 import java.util.Scanner;
 
+import symbolTable.SymbolTable;
+
 
 public class ScanMe {
 	
 	//FileInputStream sourceFile = null;
 	Scanner scanner = null;	
+	SymbolTable symTable;
 	/**
 	 * constructor
 	 * @param srcFile
 	 */
-	public ScanMe(FileReader srcFile) {
+	public ScanMe(FileReader srcFile,SymbolTable st) {
 		// TODO Auto-generated constructor stub
-		scanner = new Scanner(srcFile);	
+		scanner = new Scanner(srcFile);
+		symTable = st;
 	}
 	/**
 	 * 
@@ -40,7 +44,12 @@ public class ScanMe {
 				}
 				else
 				{
-					tokenAsString = scanner.next();
+					tokenAsString = scanner.next();	
+					
+					Token tok = symTable.search2(tokenAsString);
+					
+					return tok;
+					/*
 					if(tokenAsString.equals("%%MatrixMarket"))
 					{
 						Token tok = new Token(Symbol.MM, -1);
@@ -155,7 +164,7 @@ public class ScanMe {
 					{
 						Token tok = new Token(Symbol.UNDEFINED, -1);
 						return tok;
-					}
+					}*/
 				}
 					
 				

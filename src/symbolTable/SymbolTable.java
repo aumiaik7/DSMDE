@@ -34,7 +34,6 @@ public class SymbolTable {
 		print();
 	}
 	private Symbol insert(Token tok) {
-		// TODO Auto-generated method stub
 		String lexeme = keyWords[tok.getSymbol().getCode() - 256];
 		
 		int isOccupied = search(lexeme);
@@ -43,7 +42,7 @@ public class SymbolTable {
 		if(isOccupied == -1)
 		{	
 			Token tk = new Token(tok.getSymbol(),-1);
-			hashTable.add(position, tk);
+			hashTable.set(position, tk);
 			
 			return tok.getSymbol();
 			//occupied++;
@@ -63,7 +62,7 @@ public class SymbolTable {
 				{	
 					
 					Token tk = new Token(tok.getSymbol(),-1);
-					hashTable.add(position,tk);
+					hashTable.set(position,tk);
 					
 				}
 				//go to the next position			
@@ -107,12 +106,59 @@ public class SymbolTable {
 		Token tk;
 			
 		tk = hashTable.elementAt(position); 
-		
 		if(tk.getSymbol() == Symbol.UNDEFINED)
 			return -1;
 		else
 			return position;					
-		
+	}
+	
+	//search using token
+	public Token search2(String lex)
+	{
+		int position = hashfn(lex);
+		Token tk;
+		tk = hashTable.elementAt(position);
+		if(tk.getSymbol() == Symbol.UNDEFINED)
+			return tk;
+		else
+		{
+			while(true)
+			{
+							
+				Token tempTk;
+				tempTk = hashTable.elementAt(position); 	
+							
+				//263 is UNDEFINED symbol so position is empty insert here
+				if(tempTk.getSymbol() == Symbol.UNDEFINED)
+				{	
+					return new Token(Symbol.UNDEFINED,-1);
+				}
+				//go to the next position			
+				else
+				{
+								
+					Symbol sym = tempTk.getSymbol();
+					
+					if(sym.getCode() <= 278  && lex.equals(keyWords[sym.getCode() - 256] )) //encoding scheme for matching lexeme with keyword
+					{					
+						return tempTk; // for keyword
+					}				
+										
+					//last position so reset
+					else
+					{
+						if(position > 306)
+						{
+							position = 0;
+						}
+				
+						else
+							position++;				
+					
+					}
+				}
+			}
+		}
 		
 	}
 	
