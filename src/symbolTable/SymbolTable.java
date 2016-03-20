@@ -8,12 +8,13 @@ public class SymbolTable {
 	private static final int SYMTABLESIZE = 307;
 	Vector<Token> hashTable = new Vector<Token>(SYMTABLESIZE);
 	
+	
 	int position = 0;
 	
-	String[] keyWords = {"%%MatrixMarket", "Matrix", "DSM", "MDM", "DMM", "Coordinate", "Array",
+	public static final String[] keyWords = {"%%MatrixMarket", "Matrix", "DSM", "MDM", "DMM", "Coordinate", "Array",
 							"Integer", "Real", "Complex", "Pattern", "General", "Symmetric", "SkewSymmetric",
 							"Hermitian", "IC", "IR", "%beginDomain", "%endDomain", "%beginModElement","%endModElement",
-							"%beginAttribute", "%endAttribute", };
+							"%beginAttribute", "%endAttribute"};
 	
 	public SymbolTable() {
 		// TODO Auto-generated constructor stub
@@ -31,7 +32,7 @@ public class SymbolTable {
 			i++;
 			
 		}
-		print();
+		//print();
 	}
 	private Symbol insert(Token tok) {
 		String lexeme = keyWords[tok.getSymbol().getCode() - 256];
@@ -119,7 +120,21 @@ public class SymbolTable {
 		Token tk;
 		tk = hashTable.elementAt(position);
 		if(tk.getSymbol() == Symbol.UNDEFINED)
+		{
+			try{
+				 Double val = Double.parseDouble(lex);
+				 if(lex.contains("."))
+					 tk = new Token(Symbol.NUMDOUBLE,val);
+				 else
+					 tk = new Token(Symbol.NUMINT,val);
+			}
+			catch (NumberFormatException e)
+			{
+				
+			}
+			
 			return tk;
+		}
 		else
 		{
 			while(true)
@@ -128,10 +143,21 @@ public class SymbolTable {
 				Token tempTk;
 				tempTk = hashTable.elementAt(position); 	
 							
-				//263 is UNDEFINED symbol so position is empty insert here
 				if(tempTk.getSymbol() == Symbol.UNDEFINED)
 				{	
-					return new Token(Symbol.UNDEFINED,-1);
+					
+					try{
+						 Double val = Double.parseDouble(lex);
+						 if(lex.contains("."))
+							 tempTk = new Token(Symbol.NUMDOUBLE,val);
+						 else
+							 tempTk = new Token(Symbol.NUMINT,val);
+					}
+					catch (NumberFormatException e)
+					{
+						
+					}
+					return tempTk;
 				}
 				//go to the next position			
 				else

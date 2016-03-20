@@ -17,6 +17,9 @@ public class ScanMe {
 	//FileInputStream sourceFile = null;
 	Scanner scanner = null;	
 	SymbolTable symTable;
+	Token nextTok  = null;
+	int isnewLineToken = 0;
+	String[] tokensWithNL;
 	/**
 	 * constructor
 	 * @param srcFile
@@ -24,6 +27,8 @@ public class ScanMe {
 	public ScanMe(FileReader srcFile,SymbolTable st) {
 		// TODO Auto-generated constructor stub
 		scanner = new Scanner(srcFile);
+		scanner.useDelimiter("[ |\\t]+");
+		//scanner.useDelimiter("\t");
 		symTable = st;
 	}
 	/**
@@ -33,145 +38,121 @@ public class ScanMe {
 	public Token nextToken()
 	{
 		String tokenAsString = "";
-			if(scanner.hasNext())
+		
+			if(nextTok != null)
 			{
-				
-				if(scanner.hasNextInt() || scanner.hasNextFloat())
-				{
-					double value = Double.parseDouble(scanner.next());
-					Token tok = new Token(Symbol.NUM, value);
-					return tok;
-				}
-				else
-				{
-					tokenAsString = scanner.next();	
+				nextTok = null;
+				return new Token(Symbol.NEWLINE, -1);
+			}
+		    else if(scanner.hasNext())
+			{
+			
+					Token tok = null;
 					
-					Token tok = symTable.search2(tokenAsString);
-					
-					return tok;
-					/*
-					if(tokenAsString.equals("%%MatrixMarket"))
+					if(tokensWithNL != null)
 					{
-						Token tok = new Token(Symbol.MM, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("Matrix"))
-					{
-						Token tok = new Token(Symbol.MATRIX, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("DSM"))
-					{
-						Token tok = new Token(Symbol.DSM, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("MDM"))
-					{
-						Token tok = new Token(Symbol.MDM, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("DMM"))
-					{
-						Token tok = new Token(Symbol.DMM, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("Coordinate"))
-					{
-						Token tok = new Token(Symbol.COORD, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("Array"))
-					{
-						Token tok = new Token(Symbol.ARRAY, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("Integer"))
-					{
-						Token tok = new Token(Symbol.INT, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("Real"))
-					{
-						Token tok = new Token(Symbol.REAL, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("Complex"))
-					{
-						Token tok = new Token(Symbol.COMPLEX, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("Pattern"))
-					{
-						Token tok = new Token(Symbol.PATTERN, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("General"))
-					{
-						Token tok = new Token(Symbol.GENERAL, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("Symmetric"))
-					{
-						Token tok = new Token(Symbol.SYMETRIC, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("SkewSymmetric"))
-					{
-						Token tok = new Token(Symbol.SKSYMETRIC, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("Hermitian"))
-					{
-						Token tok = new Token(Symbol.HERMITIAN, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("IC"))
-					{
-						Token tok = new Token(Symbol.IC, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("IR"))
-					{
-						Token tok = new Token(Symbol.IR, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("%beginDomain"))
-					{
-						Token tok = new Token(Symbol.BDOMAIN, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("%endDomain"))
-					{
-						Token tok = new Token(Symbol.EDOMAIN, -1);
-						return tok;
-					}	
-					else if(tokenAsString.equals("%beginModElement"))
-					{
-						Token tok = new Token(Symbol.BMODE, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("%beginAttribute"))
-					{
-						Token tok = new Token(Symbol.BATTRIB, -1);
-						return tok;
-					}
-					else if(tokenAsString.equals("%endAttribute"))
-					{
-						Token tok = new Token(Symbol.DSM, -1);
-						return tok;
+						if(isnewLineToken == tokensWithNL.length )
+						{
+							tokensWithNL = null;
+							isnewLineToken = 0;
+							nextTok = null;
+							
+							tokenAsString = scanner.next();	
+							
+							if(tokenAsString.contains("\n"))
+							{
+								tokensWithNL = tokenAsString.split("\\r?\\n",-1);
+								tok = symTable.search2(tokensWithNL[isnewLineToken]);
+								if(isnewLineToken + 1 < tokensWithNL.length)
+									nextTok = new Token(Symbol.NEWLINE, -1);
+								isnewLineToken++;
+							}
+							else
+							{
+								tok = symTable.search2(tokenAsString);
+							}
+						}
+						else
+						{
+							if(tokensWithNL[isnewLineToken].equals(""))
+							{
+								tok = new Token(Symbol.NEWLINE, -1);
+								//return tok;
+							}
+							else
+							{
+								tok = symTable.search2(tokensWithNL[isnewLineToken]);
+								if(isnewLineToken + 1 < tokensWithNL.length)
+									nextTok = new Token(Symbol.NEWLINE, -1);
+							}
+							
+							isnewLineToken++;
+						}
 					}
 					else
 					{
-						Token tok = new Token(Symbol.UNDEFINED, -1);
-						return tok;
-					}*/
-				}
+						tokenAsString = scanner.next();	
+						
+						tokensWithNL = null;
+						isnewLineToken = 0;
+						nextTok = null;
+						if(tokenAsString.contains("\n"))
+						{
+							tokensWithNL = tokenAsString.split("\\r?\\n",-1);
+							tok = symTable.search2(tokensWithNL[isnewLineToken]);
+							if(isnewLineToken + 1 < tokensWithNL.length)
+								nextTok = new Token(Symbol.NEWLINE, -1);
+							isnewLineToken++;
+						}
+						else
+						{
+							tok = symTable.search2(tokenAsString);
+						}
+					}
 					
-				
+					return tok;
 			}
 			else
 			{
-				Token tok = new Token(Symbol.EOF, -1);
+				Token tok = null;
+				nextTok = null;
+				if(tokensWithNL != null)
+				{
+				
+					    if(isnewLineToken == tokensWithNL.length )
+						{
+							tokensWithNL = null;
+							isnewLineToken = 0;
+							tok = new Token(Symbol.EOF, -1);
+						}
+						/*else if(tokensWithNL[isnewLineToken].equals(""))
+						{
+							isnewLineToken++;
+							tok = new Token(Symbol.UNDEFINED, -1);
+						}*/
+						
+						else
+						{
+							if(tokensWithNL[isnewLineToken].equals(""))
+							{
+								tok = new Token(Symbol.NEWLINE, -1);
+								//return tok;
+							}
+							else 
+							{
+								tok = symTable.search2(tokensWithNL[isnewLineToken]);
+								if(isnewLineToken + 1 < tokensWithNL.length)
+									nextTok = new Token(Symbol.NEWLINE, -1);
+							}
+							
+							
+							isnewLineToken++;
+						}
+						
+					
+				}
+				else 
+					tok = new Token(Symbol.EOF, -1);
 				return tok;
 			}
 				

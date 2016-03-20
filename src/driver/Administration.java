@@ -18,7 +18,10 @@ public class Administration {
 			Token tok = scan.nextToken();
 			if(tok.getSymbol() == Symbol.EOF)
 				break;
-			System.out.println(tok.getSymbol());
+			if(tok.getSymbol() == Symbol.NEWLINE)
+				System.out.println();
+			else 
+			System.out.print(tok.getSymbol()+ " ");
 		}
 		
 	}
