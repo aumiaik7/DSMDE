@@ -7,9 +7,11 @@ import scanner.Token;
 public class Administration {
 	
 	ScanMe scan;
+	int lineNo;
 	public Administration(ScanMe sc) {
 		// TODO Auto-generated constructor stub
 		scan = sc;
+		lineNo = 1;
 	}
 	public void start()
 	{
@@ -24,6 +26,10 @@ public class Administration {
 			System.out.print(tok.getSymbol()+ " ");
 		}
 		
+	}
+	public void NewLine() {
+		// TODO Auto-generated method stub
+		lineNo++;
 	}
 
 }

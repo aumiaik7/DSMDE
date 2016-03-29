@@ -14,7 +14,7 @@ public class SymbolTable {
 	public static final String[] keyWords = {"%%MatrixMarket", "Matrix", "DSM", "MDM", "DMM", "Coordinate", "Array",
 							"Integer", "Real", "Complex", "Pattern", "General", "Symmetric", "SkewSymmetric",
 							"Hermitian", "IC", "IR", "%beginDomain", "%endDomain", "%beginModElement","%endModElement",
-							"%beginAttribute", "%endAttribute"};
+							"%beginAttribute", "%endAttribute","%"};
 	
 	public SymbolTable() {
 		// TODO Auto-generated constructor stub
@@ -24,7 +24,7 @@ public class SymbolTable {
 		int i = 0;
 		for(Symbol sym : Symbol.values() )
 		{
-			if(i == 23)
+			if(i == 24)
 				break;
 			
 			Token tok = new Token(sym, -1);
@@ -72,7 +72,7 @@ public class SymbolTable {
 								
 					Symbol sym = tempTk.getSymbol();
 					
-					if(sym.getCode() <= 278  && lexeme == keyWords[sym.getCode() - 256] ) //encoding scheme for matching lexeme with keyword
+					if(sym.getCode() <= 287  && lexeme == keyWords[sym.getCode() - 256] ) //encoding scheme for matching lexeme with keyword
 					{					
 						return sym; // for keyword
 					}				
@@ -165,7 +165,7 @@ public class SymbolTable {
 								
 					Symbol sym = tempTk.getSymbol();
 					
-					if(sym.getCode() <= 278  && lex.equals(keyWords[sym.getCode() - 256] )) //encoding scheme for matching lexeme with keyword
+					if(sym.getCode() <= 287  && lex.equals(keyWords[sym.getCode() - 256] )) //encoding scheme for matching lexeme with keyword
 					{					
 						return tempTk; // for keyword
 					}				
