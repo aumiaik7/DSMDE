@@ -25,6 +25,7 @@ public class Parser {
 	
 	public void DsmdeFormat(Symbol sym)
 	{
+		System.out.println("DsmdeFormat");
 		Header(stopSet);
 		if(in(ff.firstOfHeader()))
 		{
@@ -32,6 +33,7 @@ public class Parser {
 		}
 		Comments(stopSet);
 		Data(stopSet);
+		System.out.println(admin.lineNo);
 		
 	}
 	
@@ -41,6 +43,7 @@ public class Parser {
 
 	void Header(Vector<Symbol> stops)
 	{
+		System.out.println("Header");
 		banner(stops);
 		
 		if(in(ff.fisrtOfObjectType()))
@@ -56,12 +59,12 @@ public class Parser {
 	}
 	
 	void banner(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("banner");
 		match(Symbol.MM, stops);
 	}
 	   
 	void objectType(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("objectType");
 		if(lookAheadToken.getSymbol() == Symbol.MATRIX)
 			match(Symbol.MATRIX, stops);
 		else if(lookAheadToken.getSymbol() == Symbol.DSM)
@@ -73,7 +76,7 @@ public class Parser {
 	}
 	
 	void Qualifiers(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("Qualifiers");
 		if(in(ff.firstOfNDomain()))
 		{
 			NDomain(stops);
@@ -83,7 +86,7 @@ public class Parser {
 	}
 
 	void QualList(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("QualList");
 		formatType(stops);
 		if(in(ff.firstOfStructure()))
 		{
@@ -103,6 +106,7 @@ public class Parser {
 		}
 		
 		match(Symbol.NEWLINE, stops);
+		admin.NewLine();
 		
 		if(in(ff.firstOfQualList()))
 		{
@@ -112,7 +116,7 @@ public class Parser {
 	}
 
 	void formatType(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("formatType");
 		if(lookAheadToken.getSymbol() == Symbol.COORD)
 			match(Symbol.COORD, stops);
 		else if(lookAheadToken.getSymbol() == Symbol.ARRAY)
@@ -124,7 +128,7 @@ public class Parser {
 	}
 	
 	void numericType(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("numericType");
 		if(lookAheadToken.getSymbol() == Symbol.INT)
 			match(Symbol.INT, stops);
 		else if(lookAheadToken.getSymbol() == Symbol.REAL)
@@ -139,7 +143,7 @@ public class Parser {
 	}
 	
 	void structure(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("structure");
 		if(lookAheadToken.getSymbol() == Symbol.GENERAL)
 			match(Symbol.GENERAL, stops);
 		else if(lookAheadToken.getSymbol() == Symbol.SYMETRIC)
@@ -151,17 +155,17 @@ public class Parser {
 	}
 
 	void NDomain(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("NDomain");
 		Integer(stops);
 	}
 	
 	void NIAttribute(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("NIAttribute");
 		Integer(stops);
 	}
 	
 	void orientn(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("orientn");
 		if(lookAheadToken.getSymbol() == Symbol.IC)
 			match(Symbol.IC, stops);
 		else
@@ -169,7 +173,7 @@ public class Parser {
 	}
 	
 	void Comments(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("Comments");
 		if(in(ff.firstOfTextLine()))
 		{
 			TextLine(stops);
@@ -186,11 +190,15 @@ public class Parser {
 	}
 	
 	void TextLine(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
-		String line = scanner.nextTextLine();
-		verify(line);
-		lookAheadToken();
+		System.out.println("TextLine");
+		//String line = scanner.nextTextLine();
+		//verify(line);
+		//lookAheadToken();
+		match(Symbol.COMMENT,stops);
+		while(lookAheadToken.getSymbol()!= Symbol.NEWLINE)
+			lookAheadToken = scanner.nextToken();
 		match(Symbol.NEWLINE,stops);
+		admin.NewLine();
 		if(in(ff.firstOfTextLine()))
 		{
 			TextLine(stops);
@@ -198,23 +206,37 @@ public class Parser {
 	}
 
 	void Documentation(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("Documentation");
 		if(in(ff.firstOfDomainNames()))
 		{
 			DomainNames(stops);
+			if(in(ff.firstOfTextLine()))
+			{
+				TextLine(stops);
+				//Comments(stops);
+			}
 		}
-		else if(in(ff.firstOfModElementNames()))
+		
+		if(in(ff.firstOfModElementNames()))
 		{
 			ModElementNames(stops);
+			if(in(ff.firstOfTextLine()))
+			{
+				TextLine(stops);
+				//Comments(stops);
+			}
 		}
-		else if(in(ff.firstOfInteractAttributeNames()))
+		
+		if(in(ff.firstOfInteractAttributeNames()))
 		{
 			InteractAttributeNames(stops);
+			if(in(ff.firstOfTextLine()))
+			{
+				TextLine(stops);
+				//Comments(stops);
+			}
 		}
-		else
-		{
-			//error
-		}
+		
 		
 		if(in(ff.firstOfDocumentation()))
 		{
@@ -226,70 +248,76 @@ public class Parser {
 
 
 	void DomainNames(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("DomainNames");
 		beginD(stops);
 		match(Symbol.NEWLINE,stops);
+		admin.NewLine();
 		TextLine(stops);
 		endD(stops);
 		match(Symbol.NEWLINE,stops);
+		admin.NewLine();
 	}
 
 	
 	
 	private void ModElementNames(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("ModElementNames");
 		beginME(stops);
 		match(Symbol.NEWLINE,stops);
+		admin.NewLine();
 		TextLine(stops);
 		endME(stops);
 		match(Symbol.NEWLINE,stops);
+		admin.NewLine();
 		
 	}
 
 
 	private void InteractAttributeNames(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("InteractAttributeNames");
 		
 		beginIA(stops);
 		match(Symbol.NEWLINE,stops);
+		admin.NewLine();
 		TextLine(stops);
 		endIA(stops);
 		match(Symbol.NEWLINE,stops);
+		admin.NewLine();
 		
 	}
 	
 	void beginD(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("beginD");
 		match(Symbol.BDOMAIN,stops);
 	}
 
 	void endD(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("endD");
 		match(Symbol.EDOMAIN,stops);
 	}
 	
 	void beginME(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("beginME");
 		match(Symbol.BMODE,stops);
 	}
 	
 	void endME(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("endME");
 		match(Symbol.EMODE,stops);
 	}
 
 	void beginIA(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("beginIA");
 		match(Symbol.BATTRIB,stops);
 	}
 
 	void endIA(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("endIA");
 		match(Symbol.EATTRIB,stops);
 	}
 	
 	void Data(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("Data");
 		NRows(stops);
 		NCols(stops);
 		if(lookAheadToken.getSymbol() == Symbol.NEWLINE)
@@ -304,26 +332,28 @@ public class Parser {
 	
 	
 	void CoordData(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("CoordData");
 		Nnz(stops);
 		match(Symbol.NEWLINE,stops);
+		admin.NewLine();
 		CoordDataLine(stops);
 		
 	}
 
 	
 	void ArrayData(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("ArrayData");
 		ArrayDataLine(stops);
 	}
 	
 	void CoordDataLine(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("CoordDataLine");
 		
 		RowIndex(stops);
 		ColIndex(stops);
 		Values(stops);
 		match(Symbol.NEWLINE,stops);
+		admin.NewLine();
 		
 		if(lookAheadToken.getSymbol() == Symbol.NUMINT)
 			CoordData(stops);
@@ -332,45 +362,46 @@ public class Parser {
 	
 	
 	void NRows(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("NRows");
 		Integer(stops);
 	}
 
 	void NCols(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("NCols");
 		Integer(stops);
 		
 	}
 	
 	void Nnz(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("Nnz");
 		Integer(stops);
 	}
 	
-	private void RowIndex(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+	void RowIndex(Vector<Symbol> stops) {
+		System.out.println("RowIndex");
 		Integer(stops);
 		
 	}
 
-	private void ColIndex(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+	void ColIndex(Vector<Symbol> stops) {
+		System.out.println("ColIndex");
 		Integer(stops);
 		
 	}
 	
 
 	void ArrayDataLine(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("ArrayDataLine");
 		Values(stops);
 		match(Symbol.NEWLINE,stops);
+		admin.NewLine();
 		
 		if(in(ff.firstOfValues()))
 			ArrayDataLine(stops);
 	}
 	
 	void Values(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("Values");
 		if(in(ff.firstOfIAttribute()))
 		{
 			IAttribute(stops);
@@ -378,7 +409,7 @@ public class Parser {
 	}
 
 	void IAttribute(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("IAttribute");
 		if(in(ff.firstOfInteger()))
 		{
 			Integer(stops);
@@ -396,13 +427,13 @@ public class Parser {
 
 
 	void Integer(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("Integer");
 		match(Symbol.NUMINT,stops);
 		
 	}
 	
 	void Real(Vector<Symbol> stops) {
-		// TODO Auto-generated method stub
+		System.out.println("Real");
 		match(Symbol.NUMDOUBLE,stops);
 	}
 
@@ -417,7 +448,7 @@ public class Parser {
 				//newline detected
 				if(lookAheadToken.getSymbol() == Symbol.NEWLINE)
 				{
-					admin.NewLine();
+					//admin.NewLine();
 					break;
 				}
 				else if(lookAheadToken.getSymbol() != Symbol.UNDEFINED)
@@ -438,7 +469,7 @@ public class Parser {
 			//newline detected
 			if(lookAheadToken.getSymbol() == Symbol.NEWLINE)
 			{
-				admin.NewLine();
+				
 				break;
 			}
 			else if(lookAheadToken.getSymbol() != Symbol.UNDEFINED)

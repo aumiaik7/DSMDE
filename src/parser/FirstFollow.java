@@ -133,7 +133,7 @@ public class FirstFollow {
 	public Vector<Symbol> firstOfInteractAttributeNames() {
 		// TODO Auto-generated method stub
 		Vector<Symbol> fOfIAEName = new Vector<Symbol>();
-		fOfIAEName.add(Symbol.BMODE);
+		fOfIAEName.add(Symbol.BATTRIB);
 		return fOfIAEName;
 	}
 

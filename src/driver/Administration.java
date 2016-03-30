@@ -7,7 +7,7 @@ import scanner.Token;
 public class Administration {
 	
 	ScanMe scan;
-	int lineNo;
+	public int lineNo;
 	public Administration(ScanMe sc) {
 		// TODO Auto-generated constructor stub
 		scan = sc;
