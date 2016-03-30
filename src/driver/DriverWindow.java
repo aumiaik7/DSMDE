@@ -7,35 +7,26 @@
 
 package driver;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-
-import scanner.ScanMe;
-
-import java.awt.GridBagLayout;
-import javax.swing.JTextField;
-import java.awt.GridBagConstraints;
-import javax.swing.Box;
-import java.awt.Insets;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.awt.event.ActionEvent;
-import symbolTable.*;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+
+import parser.*;
+
+import scanner.ScanMe;
+import scanner.Symbol;
+import symbolTable.SymbolTable;
 
 public class DriverWindow extends JFrame {
 
@@ -108,7 +99,9 @@ public class DriverWindow extends JFrame {
 				SymbolTable st = new SymbolTable();
 				ScanMe scan = new ScanMe(sourceFile,st);
 				Administration admin = new Administration(scan);
-				admin.start();
+				Parser parser = new Parser(scan, admin); 
+				parser.DsmdeFormat(Symbol.EOF);
+				//admin.start();
 				//scan.read();
 			}
 		});

@@ -159,6 +159,14 @@ public class ScanMe {
 				
 	}
 	
+	public String nextTextLine() {
+		// TODO Auto-generated method stub
+		if(scanner.hasNextLine())
+			return scanner.nextLine();
+		else
+			return "";
+	}
+	
 	public void read() 
 	{
 		while(scanner.hasNext())
@@ -172,4 +180,5 @@ public class ScanMe {
 		}
 			
 	}
+	
 }
