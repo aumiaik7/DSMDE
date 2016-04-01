@@ -1,12 +1,35 @@
 package parser;
 
+import java.util.Collection;
 import java.util.Vector;
 
 import scanner.Symbol;
 
 public class FirstFollow {
 	
-	public Vector<Symbol> firstOfHeader()
+	//Vector<Symbol> firstOfHeader
+	//Vector<Symbol> firstOfBanner
+	//Vector<Symbol> fisrtOfObjectType
+	//Vector<Symbol> fisrtOfQualifiers
+	//Vector<Symbol> firstOfQualList
+	//Vector<Symbol> firstOFFormatType
+	//Vector<Symbol> firstOfNDomain
+	//Vector<Symbol> firstOfInteger
+	//Vector<Symbol> firstOfStructure
+	//Vector<Symbol> firstOfNiattribute
+	//Vector<Symbol> firstOfNumericType
+	//Vector<Symbol> firstOfOrientn
+	//Vector<Symbol> firstOfTextLine
+	//Vector<Symbol> firstOfDomainNames
+	//Vector<Symbol> firstOfModElementNames
+	//Vector<Symbol> firstOfInteractAttributeNames
+	//Vector<Symbol> firstOfDocumentation
+	//Vector<Symbol> firstOfIAttribute
+	//Vector<Symbol> firstOfReal
+	//Vector<Symbol> firstOfValues
+	
+	//first of header
+	Vector<Symbol> firstOfHeader()
 	{
 		Vector<Symbol> fOfBanner = firstOfBanner();
 		return fOfBanner;
@@ -19,9 +42,32 @@ public class FirstFollow {
 		fOfBanner.add(Symbol.MM);
 		return fOfBanner;
 	}
+	
+	
+	
+	
+	//first of Comments
+	Vector<Symbol> firstOfComments() {
+		// TODO Auto-generated method stub
+		Vector<Symbol> fOftl = firstOfTextLine() ;
+		Vector<Symbol> fOfDoc = firstOfDocumentation() ;
+		
+		Vector<Symbol> merge = new Vector<Symbol>();
+		merge.addAll(fOftl);
+		merge.addAll(fOfDoc);
+		return merge;
+	}
+	
+	//first of Data
+	Vector<Symbol> firstOfData() {
+		// TODO Auto-generated method stub
+		Vector<Symbol> fOfdata = new Vector<Symbol>() ;
+		fOfdata.add(Symbol.INT);
+		return fOfdata;
+	}
 
 	//first of objectType
-	Vector<Symbol> fisrtOfObjectType() {
+	Vector<Symbol> firstOfObjectType() {
 		// TODO Auto-generated method stub
 		Vector<Symbol> fOfObjType = new Vector<Symbol>() ;
 		fOfObjType.add(Symbol.MATRIX);
@@ -30,8 +76,10 @@ public class FirstFollow {
 		fOfObjType.add(Symbol.DMM);
 		return fOfObjType;
 	}
+	
+	
 
-	Vector<Symbol> fisrtOfQualifiers() {
+	Vector<Symbol> firstOfQualifiers() {
 		// TODO Auto-generated method stub
 		Vector<Symbol> fOfNdom = firstOfNDomain() ;
 		Vector<Symbol> fOfQList = firstOfQualList() ;
@@ -90,7 +138,7 @@ public class FirstFollow {
 		return fOfInt;
 	}
 
-	public Vector<Symbol> firstOfNumericType() {
+	Vector<Symbol> firstOfNumericType() {
 		// TODO Auto-generated method stub
 		Vector<Symbol> fOfNumType = new Vector<Symbol>();
 		fOfNumType.add(Symbol.INT);
@@ -130,14 +178,14 @@ public class FirstFollow {
 		return fOfModEName;
 	}
 
-	public Vector<Symbol> firstOfInteractAttributeNames() {
+	Vector<Symbol> firstOfInteractAttributeNames() {
 		// TODO Auto-generated method stub
 		Vector<Symbol> fOfIAEName = new Vector<Symbol>();
 		fOfIAEName.add(Symbol.BATTRIB);
 		return fOfIAEName;
 	}
 
-	public Vector<Symbol> firstOfDocumentation() {
+	Vector<Symbol> firstOfDocumentation() {
 		// TODO Auto-generated method stub
 		Vector<Symbol> fOfDomName = firstOfDomainNames();
 		Vector<Symbol> fOfModEName = firstOfModElementNames();
@@ -150,7 +198,7 @@ public class FirstFollow {
 		return merge;
 	}
 
-	public Vector<Symbol> firstOfIAttribute() {
+	Vector<Symbol> firstOfIAttribute() {
 		// TODO Auto-generated method stub
 		Vector<Symbol> fOfInt = firstOfInteger();
 		Vector<Symbol> fOfReal = firstOfReal();
@@ -161,7 +209,7 @@ public class FirstFollow {
 		return merge;
 	}
 
-	public Vector<Symbol> firstOfReal() {
+	Vector<Symbol> firstOfReal() {
 		// TODO Auto-generated method stub
 		Vector<Symbol> fOfReal = new Vector<Symbol>();
 		
@@ -171,10 +219,32 @@ public class FirstFollow {
 		return fOfReal;
 	}
 
-	public Vector<Symbol> firstOfValues() {
+	Vector<Symbol> firstOfValues() {
 		// TODO Auto-generated method stub
 		Vector<Symbol> fOfIAt = firstOfIAttribute();
 		return fOfIAt;
+	}
+
+	Vector<Symbol> firstOfCoorDataLine() {
+		// TODO Auto-generated method stub
+		Vector<Symbol> fOfInt = firstOfInteger();
+		return fOfInt;
+	}
+
+	Vector<Symbol> firstOfArrayDataLine() {
+		// TODO Auto-generated method stub
+		Vector<Symbol> fOfInt = firstOfInteger();
+		return fOfInt;
+	}
+
+	Vector<Symbol>  followOfValues() {
+		// TODO Auto-generated method stub
+		Vector<Symbol> fOfVal = new Vector<Symbol>();
+		
+		//fOfInt.add(Symbol.PLUS);
+		//fOfInt.add(Symbol.MINUS);
+		fOfVal.add(Symbol.NEWLINE);
+		return fOfVal;
 	}
 
 }

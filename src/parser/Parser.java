@@ -14,7 +14,7 @@ public class Parser {
 	ScanMe scanner;
 	Administration admin;
 	Token lookAheadToken;
-	Vector<Symbol> stopSet;
+	Vector<Symbol> stopSet = new Vector<Symbol>();
 	FirstFollow ff = new FirstFollow();
 	public Parser(ScanMe sc, Administration ad) {
 		// TODO Auto-generated constructor stub
@@ -25,15 +25,30 @@ public class Parser {
 	
 	public void DsmdeFormat(Symbol sym)
 	{
-		System.out.println("DsmdeFormat");
+		System.out.print(" ");System.out.print("DsmdeFormat");
+		
+		stopSet.addAll(ff.firstOfComments());
+		stopSet.addAll(ff.firstOfData());
+		stopSet.add(sym);
+		
 		Header(stopSet);
+		
 		if(in(ff.firstOfHeader()))
 		{
 			DsmdeFormat(sym);
 		}
+		
+		stopSet.clear();
+		stopSet.addAll(ff.firstOfData());
+		stopSet.add(sym);
+		
 		Comments(stopSet);
+		
+		stopSet.clear();
+		stopSet.add(sym);
+		
 		Data(stopSet);
-		System.out.println(admin.lineNo);
+		System.out.print(" ");System.out.print(admin.lineNo);
 		
 	}
 	
@@ -43,15 +58,23 @@ public class Parser {
 
 	void Header(Vector<Symbol> stops)
 	{
-		System.out.println("Header");
-		banner(stops);
+		System.out.print(" ");System.out.print("Header");
+		stopSet.clear();
+		stopSet.addAll(stops);
+		stopSet.addAll(ff.firstOfObjectType());
+		stopSet.addAll(ff.firstOfQualifiers());
 		
-		if(in(ff.fisrtOfObjectType()))
+		banner(stopSet);
+		
+		if(in(ff.firstOfObjectType()))
 		{
-			objectType(stops);
+			stopSet.clear();
+			stopSet.addAll(stops);
+			stopSet.addAll(ff.firstOfQualifiers());
+			objectType(stopSet);
 		}
 		
-		if(in(ff.fisrtOfQualifiers()))
+		if(in(ff.firstOfQualifiers()))
 		{
 			Qualifiers(stops);
 		}
@@ -59,12 +82,12 @@ public class Parser {
 	}
 	
 	void banner(Vector<Symbol> stops) {
-		System.out.println("banner");
+		System.out.print(" ");System.out.print("banner");
 		match(Symbol.MM, stops);
 	}
 	   
 	void objectType(Vector<Symbol> stops) {
-		System.out.println("objectType");
+		System.out.print(" ");System.out.print("objectType");
 		if(lookAheadToken.getSymbol() == Symbol.MATRIX)
 			match(Symbol.MATRIX, stops);
 		else if(lookAheadToken.getSymbol() == Symbol.DSM)
@@ -76,33 +99,64 @@ public class Parser {
 	}
 	
 	void Qualifiers(Vector<Symbol> stops) {
-		System.out.println("Qualifiers");
+		System.out.print(" ");System.out.print("Qualifiers");
 		if(in(ff.firstOfNDomain()))
 		{
-			NDomain(stops);
+			stopSet.clear();
+			stopSet.addAll(stops);
+			stopSet.addAll(ff.firstOfQualList());
+			NDomain(stopSet);
 		}
 		QualList(stops);
 			
 	}
 
 	void QualList(Vector<Symbol> stops) {
-		System.out.println("QualList");
+		System.out.print(" ");System.out.print("QualList");
+		
+		stopSet.clear();
+		stopSet.addAll(stops);
+		stopSet.addAll(ff.firstOfStructure());
+		stopSet.addAll(ff.firstOfNiattribute());
+		stopSet.addAll(ff.firstOfNumericType());
+		stopSet.addAll(ff.firstOfOrientn());
+		stopSet.add(Symbol.NEWLINE);
+		
 		formatType(stops);
+		
 		if(in(ff.firstOfStructure()))
 		{
-			structure(stops);
+			stopSet.clear();
+			stopSet.addAll(stops);
+			stopSet.addAll(ff.firstOfNiattribute());
+			stopSet.addAll(ff.firstOfNumericType());
+			stopSet.addAll(ff.firstOfOrientn());
+			stopSet.add(Symbol.NEWLINE);
+			structure(stopSet);
 		}
 		if(in(ff.firstOfNiattribute()))
 		{
-			NIAttribute(stops);
+			stopSet.clear();
+			stopSet.addAll(stops);
+			stopSet.addAll(ff.firstOfNumericType());
+			stopSet.addAll(ff.firstOfOrientn());
+			stopSet.add(Symbol.NEWLINE);
+			NIAttribute(stopSet);
 		}
 		if(in(ff.firstOfNumericType()))
 		{
-			numericType(stops);
+			stopSet.clear();
+			stopSet.addAll(stops);
+			stopSet.addAll(ff.firstOfOrientn());
+			stopSet.add(Symbol.NEWLINE);
+			numericType(stopSet);
 		}
 		if(in(ff.firstOfOrientn()))
 		{
-			orientn(stops);	
+			stopSet.clear();
+			stopSet.addAll(stops);
+			stopSet.add(Symbol.NEWLINE);
+			orientn(stopSet);	
 		}
 		
 		match(Symbol.NEWLINE, stops);
@@ -116,7 +170,7 @@ public class Parser {
 	}
 
 	void formatType(Vector<Symbol> stops) {
-		System.out.println("formatType");
+		System.out.print(" ");System.out.print("formatType");
 		if(lookAheadToken.getSymbol() == Symbol.COORD)
 			match(Symbol.COORD, stops);
 		else if(lookAheadToken.getSymbol() == Symbol.ARRAY)
@@ -128,7 +182,7 @@ public class Parser {
 	}
 	
 	void numericType(Vector<Symbol> stops) {
-		System.out.println("numericType");
+		System.out.print(" ");System.out.print("numericType");
 		if(lookAheadToken.getSymbol() == Symbol.INT)
 			match(Symbol.INT, stops);
 		else if(lookAheadToken.getSymbol() == Symbol.REAL)
@@ -143,7 +197,7 @@ public class Parser {
 	}
 	
 	void structure(Vector<Symbol> stops) {
-		System.out.println("structure");
+		System.out.print(" ");System.out.print("structure");
 		if(lookAheadToken.getSymbol() == Symbol.GENERAL)
 			match(Symbol.GENERAL, stops);
 		else if(lookAheadToken.getSymbol() == Symbol.SYMETRIC)
@@ -155,17 +209,17 @@ public class Parser {
 	}
 
 	void NDomain(Vector<Symbol> stops) {
-		System.out.println("NDomain");
+		System.out.print(" ");System.out.print("NDomain");
 		Integer(stops);
 	}
 	
 	void NIAttribute(Vector<Symbol> stops) {
-		System.out.println("NIAttribute");
+		System.out.print(" ");System.out.print("NIAttribute");
 		Integer(stops);
 	}
 	
 	void orientn(Vector<Symbol> stops) {
-		System.out.println("orientn");
+		System.out.print(" ");System.out.print("orientn");
 		if(lookAheadToken.getSymbol() == Symbol.IC)
 			match(Symbol.IC, stops);
 		else
@@ -173,14 +227,20 @@ public class Parser {
 	}
 	
 	void Comments(Vector<Symbol> stops) {
-		System.out.println("Comments");
+		System.out.print(" ");System.out.print("Comments");
 		if(in(ff.firstOfTextLine()))
 		{
-			TextLine(stops);
+			stopSet.clear();
+			stopSet.addAll(stops);
+			stopSet.addAll(ff.firstOfDocumentation());
+			stopSet.addAll(ff.firstOfTextLine());
+			TextLine(stopSet);
 			//Comments(stops);
 		}
-		
-		Documentation(stops);
+		stopSet.clear();
+		stopSet.addAll(stops);
+		stopSet.addAll(ff.firstOfTextLine());
+		Documentation(stopSet);
 		
 		if(in(ff.firstOfTextLine()))
 		{
@@ -190,7 +250,7 @@ public class Parser {
 	}
 	
 	void TextLine(Vector<Symbol> stops) {
-		System.out.println("TextLine");
+		System.out.print(" ");System.out.print("TextLine");
 		//String line = scanner.nextTextLine();
 		//verify(line);
 		//lookAheadToken();
@@ -206,33 +266,64 @@ public class Parser {
 	}
 
 	void Documentation(Vector<Symbol> stops) {
-		System.out.println("Documentation");
+		System.out.print(" ");System.out.print("Documentation");
 		if(in(ff.firstOfDomainNames()))
 		{
-			DomainNames(stops);
+			stopSet.clear();
+			stopSet.addAll(stops);
+			stopSet.addAll(ff.firstOfModElementNames());
+			stopSet.addAll(ff.firstOfInteractAttributeNames());
+			stopSet.addAll(ff.firstOfTextLine());
+			
+			DomainNames(stopSet);
 			if(in(ff.firstOfTextLine()))
 			{
-				TextLine(stops);
+				stopSet.clear();
+				stopSet.addAll(stops);
+				stopSet.addAll(ff.firstOfModElementNames());
+				stopSet.addAll(ff.firstOfInteractAttributeNames());
+				stopSet.addAll(ff.firstOfTextLine());
+				
+				TextLine(stopSet);
 				//Comments(stops);
 			}
 		}
 		
 		if(in(ff.firstOfModElementNames()))
 		{
-			ModElementNames(stops);
+			stopSet.clear();
+			stopSet.addAll(stops);
+			stopSet.addAll(ff.firstOfInteractAttributeNames());
+			stopSet.addAll(ff.firstOfTextLine());
+			
+			ModElementNames(stopSet);
+			
 			if(in(ff.firstOfTextLine()))
 			{
-				TextLine(stops);
+				stopSet.clear();
+				stopSet.addAll(stops);
+				stopSet.addAll(ff.firstOfInteractAttributeNames());
+				stopSet.addAll(ff.firstOfTextLine());
+				
+				TextLine(stopSet);
 				//Comments(stops);
 			}
 		}
 		
 		if(in(ff.firstOfInteractAttributeNames()))
 		{
-			InteractAttributeNames(stops);
+			stopSet.clear();
+			stopSet.addAll(stops);
+			stopSet.addAll(ff.firstOfTextLine());
+			
+			InteractAttributeNames(stopSet);
+			
 			if(in(ff.firstOfTextLine()))
 			{
-				TextLine(stops);
+				stopSet.clear();
+				stopSet.addAll(stops);
+				stopSet.addAll(ff.firstOfTextLine());
+				TextLine(stopSet);
 				//Comments(stops);
 			}
 		}
@@ -248,12 +339,27 @@ public class Parser {
 
 
 	void DomainNames(Vector<Symbol> stops) {
-		System.out.println("DomainNames");
-		beginD(stops);
+		System.out.print(" ");System.out.print("DomainNames");
+		
+		stopSet.clear();
+		stopSet.addAll(stops);
+		stopSet.add(Symbol.NEWLINE);
+		stopSet.addAll(ff.firstOfTextLine());
+		stopSet.add(Symbol.EDOMAIN);
+		
+		beginD(stopSet);
 		match(Symbol.NEWLINE,stops);
 		admin.NewLine();
-		TextLine(stops);
-		endD(stops);
+		
+				
+		TextLine(stopSet);
+		
+		stopSet.clear();
+		stopSet.addAll(stops);
+		stopSet.add(Symbol.NEWLINE);
+		
+		endD(stopSet);
+		
 		match(Symbol.NEWLINE,stops);
 		admin.NewLine();
 	}
@@ -261,12 +367,27 @@ public class Parser {
 	
 	
 	private void ModElementNames(Vector<Symbol> stops) {
-		System.out.println("ModElementNames");
-		beginME(stops);
+		System.out.print(" ");System.out.print("ModElementNames");
+		
+		stopSet.clear();
+		stopSet.addAll(stops);
+		stopSet.add(Symbol.NEWLINE);
+		stopSet.addAll(ff.firstOfTextLine());
+		stopSet.add(Symbol.EMODE);
+		
+		beginME(stopSet);
+		
 		match(Symbol.NEWLINE,stops);
 		admin.NewLine();
-		TextLine(stops);
-		endME(stops);
+		
+		TextLine(stopSet);
+		
+		stopSet.clear();
+		stopSet.addAll(stops);
+		stopSet.add(Symbol.NEWLINE);
+		
+		endME(stopSet);
+		
 		match(Symbol.NEWLINE,stops);
 		admin.NewLine();
 		
@@ -274,65 +395,89 @@ public class Parser {
 
 
 	private void InteractAttributeNames(Vector<Symbol> stops) {
-		System.out.println("InteractAttributeNames");
+		System.out.print(" ");System.out.print("InteractAttributeNames");
+		stopSet.clear();
+		stopSet.addAll(stops);
+		stopSet.add(Symbol.NEWLINE);
+		stopSet.addAll(ff.firstOfTextLine());
+		stopSet.add(Symbol.EATTRIB);
 		
-		beginIA(stops);
+		beginIA(stopSet);
+		
 		match(Symbol.NEWLINE,stops);
 		admin.NewLine();
-		TextLine(stops);
+		
+		TextLine(stopSet);
+		
+		stopSet.clear();
+		stopSet.addAll(stops);
+		stopSet.add(Symbol.NEWLINE);
+
 		endIA(stops);
+		
 		match(Symbol.NEWLINE,stops);
 		admin.NewLine();
 		
 	}
 	
 	void beginD(Vector<Symbol> stops) {
-		System.out.println("beginD");
+		System.out.print(" ");System.out.print("beginD");
 		match(Symbol.BDOMAIN,stops);
 	}
 
 	void endD(Vector<Symbol> stops) {
-		System.out.println("endD");
+		System.out.print(" ");System.out.print("endD");
 		match(Symbol.EDOMAIN,stops);
 	}
 	
 	void beginME(Vector<Symbol> stops) {
-		System.out.println("beginME");
+		System.out.print(" ");System.out.print("beginME");
 		match(Symbol.BMODE,stops);
 	}
 	
 	void endME(Vector<Symbol> stops) {
-		System.out.println("endME");
+		System.out.print(" ");System.out.print("endME");
 		match(Symbol.EMODE,stops);
 	}
 
 	void beginIA(Vector<Symbol> stops) {
-		System.out.println("beginIA");
+		System.out.print(" ");System.out.print("beginIA");
 		match(Symbol.BATTRIB,stops);
 	}
 
 	void endIA(Vector<Symbol> stops) {
-		System.out.println("endIA");
+		System.out.print(" ");System.out.print("endIA");
 		match(Symbol.EATTRIB,stops);
 	}
 	
 	void Data(Vector<Symbol> stops) {
-		System.out.println("Data");
+		System.out.print(" ");System.out.print("Data");
 		NRows(stops);
 		NCols(stops);
 		if(lookAheadToken.getSymbol() == Symbol.NEWLINE)
 		{
-			ArrayData(stops);
+			stopSet.clear();
+			stopSet.addAll(stops);
+			stopSet.add(Symbol.NEWLINE);
+			stopSet.addAll(ff.firstOfArrayDataLine());
+			stopSet.addAll(ff.followOfValues());
+			
+			ArrayData(stopSet);
 		}
 		else
 		{
-			CoordData(stops);
+			stopSet.clear();
+			stopSet.addAll(stops);
+			stopSet.add(Symbol.NEWLINE);
+			stopSet.addAll(ff.firstOfCoorDataLine());
+			
+			CoordData(stopSet);
 		}
 	}
 	
 	
 	void CoordData(Vector<Symbol> stops) {
-		System.out.println("CoordData");
+		System.out.print(" ");System.out.print("CoordData");
 		Nnz(stops);
 		match(Symbol.NEWLINE,stops);
 		admin.NewLine();
@@ -342,16 +487,33 @@ public class Parser {
 
 	
 	void ArrayData(Vector<Symbol> stops) {
-		System.out.println("ArrayData");
+		System.out.print(" ");System.out.print("ArrayData");
 		ArrayDataLine(stops);
 	}
 	
 	void CoordDataLine(Vector<Symbol> stops) {
-		System.out.println("CoordDataLine");
+		System.out.print(" ");System.out.print("CoordDataLine");
 		
-		RowIndex(stops);
-		ColIndex(stops);
-		Values(stops);
+		stopSet.clear();
+		stopSet.addAll(stops);
+		stopSet.add(Symbol.INT);
+		stopSet.addAll(ff.firstOfValues());
+		stopSet.addAll(ff.followOfValues());
+		RowIndex(stopSet);
+		
+		stopSet.clear();
+		stopSet.addAll(stops);
+		stopSet.addAll(ff.firstOfValues());
+		stopSet.addAll(ff.followOfValues());
+		
+		ColIndex(stopSet);
+		
+		stopSet.clear();
+		stopSet.addAll(stops);
+		stopSet.addAll(ff.followOfValues());
+		
+		Values(stopSet);
+		
 		match(Symbol.NEWLINE,stops);
 		admin.NewLine();
 		
@@ -362,37 +524,42 @@ public class Parser {
 	
 	
 	void NRows(Vector<Symbol> stops) {
-		System.out.println("NRows");
+		System.out.print(" ");System.out.print("NRows");
 		Integer(stops);
 	}
 
 	void NCols(Vector<Symbol> stops) {
-		System.out.println("NCols");
+		System.out.print(" ");System.out.print("NCols");
 		Integer(stops);
 		
 	}
 	
 	void Nnz(Vector<Symbol> stops) {
-		System.out.println("Nnz");
+		System.out.print(" ");System.out.print("Nnz");
 		Integer(stops);
 	}
 	
 	void RowIndex(Vector<Symbol> stops) {
-		System.out.println("RowIndex");
+		System.out.print(" ");System.out.print("RowIndex");
 		Integer(stops);
 		
 	}
 
 	void ColIndex(Vector<Symbol> stops) {
-		System.out.println("ColIndex");
+		System.out.print(" ");System.out.print("ColIndex");
 		Integer(stops);
 		
 	}
 	
 
 	void ArrayDataLine(Vector<Symbol> stops) {
-		System.out.println("ArrayDataLine");
-		Values(stops);
+		System.out.print(" ");System.out.print("ArrayDataLine");
+		stopSet.clear();
+		stopSet.addAll(stops);
+		stopSet.addAll(ff.followOfValues());
+
+		Values(stopSet);
+		
 		match(Symbol.NEWLINE,stops);
 		admin.NewLine();
 		
@@ -401,15 +568,19 @@ public class Parser {
 	}
 	
 	void Values(Vector<Symbol> stops) {
-		System.out.println("Values");
+		System.out.print(" ");System.out.print("Values");
 		if(in(ff.firstOfIAttribute()))
 		{
 			IAttribute(stops);
 		}
+		else if(in(ff.followOfValues()))
+		{
+			//do nothing
+		}
 	}
 
 	void IAttribute(Vector<Symbol> stops) {
-		System.out.println("IAttribute");
+		System.out.print(" ");System.out.print("IAttribute");
 		if(in(ff.firstOfInteger()))
 		{
 			Integer(stops);
@@ -427,13 +598,13 @@ public class Parser {
 
 
 	void Integer(Vector<Symbol> stops) {
-		System.out.println("Integer");
+		System.out.print(" ");System.out.print("Integer");
 		match(Symbol.NUMINT,stops);
 		
 	}
 	
 	void Real(Vector<Symbol> stops) {
-		System.out.println("Real");
+		System.out.print(" ");System.out.print("Real");
 		match(Symbol.NUMDOUBLE,stops);
 	}
 
@@ -441,6 +612,8 @@ public class Parser {
 		// TODO Auto-generated method stub
 		if(lookAheadToken.getSymbol() == sym)
 		{
+			if(sym == Symbol.NEWLINE)
+				System.out.println();
 			while(true)
 			{
 				lookAheadToken = scanner.nextToken();
@@ -449,6 +622,7 @@ public class Parser {
 				if(lookAheadToken.getSymbol() == Symbol.NEWLINE)
 				{
 					//admin.NewLine();
+					
 					break;
 				}
 				else if(lookAheadToken.getSymbol() != Symbol.UNDEFINED)
@@ -469,7 +643,7 @@ public class Parser {
 			//newline detected
 			if(lookAheadToken.getSymbol() == Symbol.NEWLINE)
 			{
-				
+				System.out.println();
 				break;
 			}
 			else if(lookAheadToken.getSymbol() != Symbol.UNDEFINED)
