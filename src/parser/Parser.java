@@ -11,10 +11,11 @@ import scanner.Token;
 
 public class Parser {
 	
+	static int ScanE = 1, ParseE = 2,textLine = 0;
 	ScanMe scanner;
 	Administration admin;
 	Token lookAheadToken;
-	Vector<Symbol> stopSet = new Vector<Symbol>();
+	//Vector<Symbol> stopSet = new Vector<Symbol>();
 	FirstFollow ff = new FirstFollow();
 	public Parser(ScanMe sc, Administration ad) {
 		// TODO Auto-generated constructor stub
@@ -27,6 +28,7 @@ public class Parser {
 	{
 		System.out.print(" ");System.out.print("DsmdeFormat");
 		
+		Vector<Symbol> stopSet = new Vector<Symbol>();
 		stopSet.addAll(ff.firstOfComments());
 		stopSet.addAll(ff.firstOfData());
 		stopSet.add(sym);
@@ -59,7 +61,8 @@ public class Parser {
 	void Header(Vector<Symbol> stops)
 	{
 		System.out.print(" ");System.out.print("Header");
-		stopSet.clear();
+		//stopSet.clear();
+		Vector<Symbol> stopSet = new Vector<Symbol>();
 		stopSet.addAll(stops);
 		stopSet.addAll(ff.firstOfObjectType());
 		stopSet.addAll(ff.firstOfQualifiers());
@@ -102,7 +105,8 @@ public class Parser {
 		System.out.print(" ");System.out.print("Qualifiers");
 		if(in(ff.firstOfNDomain()))
 		{
-			stopSet.clear();
+			Vector<Symbol> stopSet = new Vector<Symbol>();
+			//stopSet.clear();
 			stopSet.addAll(stops);
 			stopSet.addAll(ff.firstOfQualList());
 			NDomain(stopSet);
@@ -113,8 +117,8 @@ public class Parser {
 
 	void QualList(Vector<Symbol> stops) {
 		System.out.print(" ");System.out.print("QualList");
-		
-		stopSet.clear();
+		Vector<Symbol> stopSet = new Vector<Symbol>();
+		//stopSet.clear();
 		stopSet.addAll(stops);
 		stopSet.addAll(ff.firstOfStructure());
 		stopSet.addAll(ff.firstOfNiattribute());
@@ -122,7 +126,7 @@ public class Parser {
 		stopSet.addAll(ff.firstOfOrientn());
 		stopSet.add(Symbol.NEWLINE);
 		
-		formatType(stops);
+		formatType(stopSet);
 		
 		if(in(ff.firstOfStructure()))
 		{
@@ -147,6 +151,7 @@ public class Parser {
 		{
 			stopSet.clear();
 			stopSet.addAll(stops);
+			stopSet.addAll(ff.firstOfNumericType());
 			stopSet.addAll(ff.firstOfOrientn());
 			stopSet.add(Symbol.NEWLINE);
 			numericType(stopSet);
@@ -230,14 +235,16 @@ public class Parser {
 		System.out.print(" ");System.out.print("Comments");
 		if(in(ff.firstOfTextLine()))
 		{
-			stopSet.clear();
+			Vector<Symbol> stopSet = new Vector<Symbol>();
+			//stopSet.clear();
 			stopSet.addAll(stops);
 			stopSet.addAll(ff.firstOfDocumentation());
 			stopSet.addAll(ff.firstOfTextLine());
 			TextLine(stopSet);
 			//Comments(stops);
 		}
-		stopSet.clear();
+		Vector<Symbol> stopSet = new Vector<Symbol>();
+		//stopSet.clear();
 		stopSet.addAll(stops);
 		stopSet.addAll(ff.firstOfTextLine());
 		Documentation(stopSet);
@@ -254,6 +261,7 @@ public class Parser {
 		//String line = scanner.nextTextLine();
 		//verify(line);
 		//lookAheadToken();
+		textLine = 1;
 		match(Symbol.COMMENT,stops);
 		while(lookAheadToken.getSymbol()!= Symbol.NEWLINE)
 			lookAheadToken = scanner.nextToken();
@@ -263,13 +271,15 @@ public class Parser {
 		{
 			TextLine(stops);
 		}
+		textLine = 0;
 	}
 
 	void Documentation(Vector<Symbol> stops) {
 		System.out.print(" ");System.out.print("Documentation");
 		if(in(ff.firstOfDomainNames()))
 		{
-			stopSet.clear();
+			Vector<Symbol> stopSet = new Vector<Symbol>();
+			//stopSet.clear();
 			stopSet.addAll(stops);
 			stopSet.addAll(ff.firstOfModElementNames());
 			stopSet.addAll(ff.firstOfInteractAttributeNames());
@@ -291,7 +301,8 @@ public class Parser {
 		
 		if(in(ff.firstOfModElementNames()))
 		{
-			stopSet.clear();
+			Vector<Symbol> stopSet = new Vector<Symbol>();
+			//stopSet.clear();
 			stopSet.addAll(stops);
 			stopSet.addAll(ff.firstOfInteractAttributeNames());
 			stopSet.addAll(ff.firstOfTextLine());
@@ -312,7 +323,8 @@ public class Parser {
 		
 		if(in(ff.firstOfInteractAttributeNames()))
 		{
-			stopSet.clear();
+			Vector<Symbol> stopSet = new Vector<Symbol>();
+			//stopSet.clear();
 			stopSet.addAll(stops);
 			stopSet.addAll(ff.firstOfTextLine());
 			
@@ -340,8 +352,8 @@ public class Parser {
 
 	void DomainNames(Vector<Symbol> stops) {
 		System.out.print(" ");System.out.print("DomainNames");
-		
-		stopSet.clear();
+		Vector<Symbol> stopSet = new Vector<Symbol>();
+		//stopSet.clear();
 		stopSet.addAll(stops);
 		stopSet.add(Symbol.NEWLINE);
 		stopSet.addAll(ff.firstOfTextLine());
@@ -369,7 +381,8 @@ public class Parser {
 	private void ModElementNames(Vector<Symbol> stops) {
 		System.out.print(" ");System.out.print("ModElementNames");
 		
-		stopSet.clear();
+		Vector<Symbol> stopSet = new Vector<Symbol>();
+		//stopSet.clear();
 		stopSet.addAll(stops);
 		stopSet.add(Symbol.NEWLINE);
 		stopSet.addAll(ff.firstOfTextLine());
@@ -396,7 +409,8 @@ public class Parser {
 
 	private void InteractAttributeNames(Vector<Symbol> stops) {
 		System.out.print(" ");System.out.print("InteractAttributeNames");
-		stopSet.clear();
+		Vector<Symbol> stopSet = new Vector<Symbol>();
+		//stopSet.clear();
 		stopSet.addAll(stops);
 		stopSet.add(Symbol.NEWLINE);
 		stopSet.addAll(ff.firstOfTextLine());
@@ -413,7 +427,7 @@ public class Parser {
 		stopSet.addAll(stops);
 		stopSet.add(Symbol.NEWLINE);
 
-		endIA(stops);
+		endIA(stopSet);
 		
 		match(Symbol.NEWLINE,stops);
 		admin.NewLine();
@@ -452,10 +466,18 @@ public class Parser {
 	
 	void Data(Vector<Symbol> stops) {
 		System.out.print(" ");System.out.print("Data");
-		NRows(stops);
-		NCols(stops);
+		Vector<Symbol> stopSet = new Vector<Symbol>();
+		//stopSet.clear();
+		stopSet.addAll(stops);
+		stopSet.add(Symbol.NUMINT);
+		stopSet.add(Symbol.NEWLINE);
+		stopSet.addAll(ff.firstOfArrayDataLine());
+		stopSet.addAll(ff.firstOfCoorDataLine());
+		NRows(stopSet);
+		NCols(stopSet);
 		if(lookAheadToken.getSymbol() == Symbol.NEWLINE)
 		{
+			//Vector<Symbol> stopSet = new Vector<Symbol>();
 			stopSet.clear();
 			stopSet.addAll(stops);
 			stopSet.add(Symbol.NEWLINE);
@@ -466,6 +488,7 @@ public class Parser {
 		}
 		else
 		{
+			//Vector<Symbol> stopSet = new Vector<Symbol>();
 			stopSet.clear();
 			stopSet.addAll(stops);
 			stopSet.add(Symbol.NEWLINE);
@@ -493,8 +516,8 @@ public class Parser {
 	
 	void CoordDataLine(Vector<Symbol> stops) {
 		System.out.print(" ");System.out.print("CoordDataLine");
-		
-		stopSet.clear();
+		Vector<Symbol> stopSet = new Vector<Symbol>();
+		//stopSet.clear();
 		stopSet.addAll(stops);
 		stopSet.add(Symbol.INT);
 		stopSet.addAll(ff.firstOfValues());
@@ -554,13 +577,16 @@ public class Parser {
 
 	void ArrayDataLine(Vector<Symbol> stops) {
 		System.out.print(" ");System.out.print("ArrayDataLine");
-		stopSet.clear();
+		Vector<Symbol> stopSet = new Vector<Symbol>();
+		//stopSet.clear();
 		stopSet.addAll(stops);
 		stopSet.addAll(ff.followOfValues());
+		//stopSet.add(Symbol.NUMINT);
+		stopSet.add(Symbol.NUMDOUBLE);
 
 		Values(stopSet);
 		
-		match(Symbol.NEWLINE,stops);
+		match(Symbol.NEWLINE,stopSet);
 		admin.NewLine();
 		
 		if(in(ff.firstOfValues()))
@@ -608,6 +634,66 @@ public class Parser {
 		match(Symbol.NUMDOUBLE,stops);
 	}
 
+	
+	//syntax error
+	//Syntex Error recovery
+	// when any error occured we try find the next possible valid
+	// symbol (stop symbol) that can occur after the error. 
+
+	void syntaxError(Vector<Symbol> stops)
+	{
+		//continue to grab token until any stop symbol is found
+		while(!in(stops))
+		{
+			lookAheadToken = scanner.nextToken();	
+			//newline detected
+			if(lookAheadToken.getSymbol() == Symbol.NEWLINE)
+			{
+				break;
+			}
+			//lexical errors
+			else if(lookAheadToken.getSymbol() == Symbol.UNDEFINED)
+			{
+				//admin.error(ScanE,lookAheadTok.getSymbol(),0);
+			}
+		}
+	}
+	//after matching any terminal symbol we check whether our look ahead token is valid or not
+	void syntaxCheck(Vector<Symbol> stops)
+	{
+		//grab a look ahead token
+		while(true && textLine == 0)
+		{	
+			
+			//newline detected
+			if(lookAheadToken.getSymbol() == Symbol.NEWLINE)
+			{
+				break;
+			}
+			//lexical errors
+			else if(lookAheadToken.getSymbol() == Symbol.UNDEFINED)
+			{
+				//admin.error(ScanE,lookAheadTok.getSymbol(),0);
+			}
+			else if(lookAheadToken.getSymbol() != Symbol.UNDEFINED)
+			{
+				break;
+			}
+				
+			lookAheadToken = scanner.nextToken();
+		}
+		//look ahead symbol is not in stop set so sytax error occuered
+		if(!in(stops) && textLine == 0)
+		{
+			//report syntax error
+			admin.error(ParseE,lookAheadToken.getSymbol(),2);
+			
+			//recover from syntax error
+			syntaxError(stops);
+		}
+	}
+	
+	
 	void match(Symbol sym, Vector<Symbol> stops) {
 		// TODO Auto-generated method stub
 		if(lookAheadToken.getSymbol() == sym)
@@ -631,6 +717,16 @@ public class Parser {
 				}
 			}
 		}
+		else
+		{
+			//report syntax error 
+			admin.error(ParseE,sym,1);
+			//recover from syntax error
+			syntaxError(stops);
+		}
+		//check whether the look ahead symbol is valid or not
+		//if not crave for valid lookahead symbol
+		syntaxCheck(stops);
 	}
 	
 	

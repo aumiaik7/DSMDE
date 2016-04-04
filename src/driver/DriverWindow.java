@@ -98,7 +98,7 @@ public class DriverWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				SymbolTable st = new SymbolTable();
 				ScanMe scan = new ScanMe(sourceFile,st);
-				Administration admin = new Administration(scan);
+				Administration admin = new Administration(scan,st);
 				Parser parser = new Parser(scan, admin); 
 				parser.DsmdeFormat(Symbol.EOF);
 				//admin.start();

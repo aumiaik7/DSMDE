@@ -61,9 +61,12 @@ public class FirstFollow {
 	//first of Data
 	Vector<Symbol> firstOfData() {
 		// TODO Auto-generated method stub
-		Vector<Symbol> fOfdata = new Vector<Symbol>() ;
-		fOfdata.add(Symbol.INT);
-		return fOfdata;
+		Vector<Symbol> fOfInt = new Vector<Symbol>();
+		
+		//fOfInt.add(Symbol.PLUS);
+		//fOfInt.add(Symbol.MINUS);
+		fOfInt.add(Symbol.NUMINT);
+		return fOfInt;	
 	}
 
 	//first of objectType
