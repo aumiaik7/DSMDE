@@ -1,20 +1,30 @@
 package scanner;
 
 public enum Symbol {
-	MM(256),MATRIX(257),DSM(258),MDM(259),DMM(260),COORD(261),ARRAY(262),INT(263),REAL(264)
-	,COMPLEX(265),PATTERN(266),GENERAL(267),SYMETRIC(268),SKSYMETRIC(269),HERMITIAN(270),
-	IC(271),IR(272),BDOMAIN(273),EDOMAIN(274),BMODE(275),EMODE(276),BATTRIB(277),EATTRIB(278),
-	COMMENT(279),PLUS(280),MINUS(281),E(282),NUMINT(283),NUMDOUBLE(284),UNDEFINED(285),EOF(286),
-	NEWLINE(287);
+	MM(256,"%%MatrixMarket"),MATRIX(257,"Matrix"),DSM(258,"DSM"),MDM(259,"MDM"),DMM(260,"DMM")
+	,COORD(261,"Coordinate"),ARRAY(262,"Array"),INT(263,"Integer"),REAL(264,"Real")
+	,COMPLEX(265,"Complex"),PATTERN(266,"Pattern"),GENERAL(267,"General"),SYMETRIC(268,"Symmetric")
+	,SKSYMETRIC(269,"Skew-Symmetric'"),HERMITIAN(270,"Hermitian"),IC(271,"IC"),IR(272,"IR")
+	,BDOMAIN(273,"%beginDomain"),EDOMAIN(274,"%endDomain"),BMODE(275,"%beginModElement")
+	,EMODE(276,"%endModElement"),BATTRIB(277,"%beginAttribute"),EATTRIB(278,"%endAttribute")
+	,COMMENT(279,"textLine"),PLUS(280,"+"),MINUS(281,"-"),E(282,"e"),NUMINT(283,"num int")
+	,NUMDOUBLE(284,"num double"),UNDEFINED(285,"Undefined"),EOF(286,"End of File"),	NEWLINE(287,"new line");
 	
 	private final int code;
-	Symbol(int code)
+	private final String lexeme;
+	Symbol(int code, String lex)
 	{
 		this.code = code;
+		this.lexeme = lex;
 	}
 	
 	public int getCode()
 	{
 		return code;
+	}
+	
+	public String getLexeme()
+	{
+		return lexeme;
 	}
 }

@@ -73,14 +73,21 @@ public class Parser {
 		{
 			stopSet.clear();
 			stopSet.addAll(stops);
+			stopSet.addAll(ff.firstOfHeader());
 			stopSet.addAll(ff.firstOfQualifiers());
 			objectType(stopSet);
 		}
 		
 		if(in(ff.firstOfQualifiers()))
 		{
-			Qualifiers(stops);
+			stopSet.clear();
+			stopSet.addAll(stops);
+			stopSet.addAll(ff.firstOfHeader());
+			Qualifiers(stopSet);
 		}
+		
+		if(in(ff.firstOfHeader()))
+			Header(stops);
 		
 	}
 	
@@ -165,7 +172,7 @@ public class Parser {
 		}
 		
 		match(Symbol.NEWLINE, stops);
-		admin.NewLine();
+		//admin.NewLine();
 		
 		if(in(ff.firstOfQualList()))
 		{
@@ -266,7 +273,7 @@ public class Parser {
 		while(lookAheadToken.getSymbol()!= Symbol.NEWLINE)
 			lookAheadToken = scanner.nextToken();
 		match(Symbol.NEWLINE,stops);
-		admin.NewLine();
+		//admin.NewLine();
 		if(in(ff.firstOfTextLine()))
 		{
 			TextLine(stops);
@@ -276,6 +283,7 @@ public class Parser {
 
 	void Documentation(Vector<Symbol> stops) {
 		System.out.print(" ");System.out.print("Documentation");
+		
 		if(in(ff.firstOfDomainNames()))
 		{
 			Vector<Symbol> stopSet = new Vector<Symbol>();
@@ -284,16 +292,12 @@ public class Parser {
 			stopSet.addAll(ff.firstOfModElementNames());
 			stopSet.addAll(ff.firstOfInteractAttributeNames());
 			stopSet.addAll(ff.firstOfTextLine());
+			stopSet.addAll(ff.firstOfDocumentation());
 			
 			DomainNames(stopSet);
 			if(in(ff.firstOfTextLine()))
 			{
-				stopSet.clear();
-				stopSet.addAll(stops);
-				stopSet.addAll(ff.firstOfModElementNames());
-				stopSet.addAll(ff.firstOfInteractAttributeNames());
-				stopSet.addAll(ff.firstOfTextLine());
-				
+								
 				TextLine(stopSet);
 				//Comments(stops);
 			}
@@ -306,16 +310,12 @@ public class Parser {
 			stopSet.addAll(stops);
 			stopSet.addAll(ff.firstOfInteractAttributeNames());
 			stopSet.addAll(ff.firstOfTextLine());
+			stopSet.addAll(ff.firstOfDocumentation());
 			
 			ModElementNames(stopSet);
 			
 			if(in(ff.firstOfTextLine()))
 			{
-				stopSet.clear();
-				stopSet.addAll(stops);
-				stopSet.addAll(ff.firstOfInteractAttributeNames());
-				stopSet.addAll(ff.firstOfTextLine());
-				
 				TextLine(stopSet);
 				//Comments(stops);
 			}
@@ -327,24 +327,31 @@ public class Parser {
 			//stopSet.clear();
 			stopSet.addAll(stops);
 			stopSet.addAll(ff.firstOfTextLine());
+			stopSet.addAll(ff.firstOfDocumentation());
 			
 			InteractAttributeNames(stopSet);
 			
 			if(in(ff.firstOfTextLine()))
 			{
-				stopSet.clear();
-				stopSet.addAll(stops);
-				stopSet.addAll(ff.firstOfTextLine());
 				TextLine(stopSet);
 				//Comments(stops);
 			}
 		}
 		
 		
+		
 		if(in(ff.firstOfDocumentation()))
 		{
 			Documentation(stops);
 		}
+		
+		Vector<Symbol> stopSet = new Vector<Symbol>();
+		//stopSet.clear();
+		stopSet.addAll(stops);
+		//stopSet.addAll(ff.firstOfTextLine());
+		stopSet.addAll(ff.followOfDocumentation());
+		
+		syntaxCheck(stops);
 		
 	}
 	
@@ -361,7 +368,7 @@ public class Parser {
 		
 		beginD(stopSet);
 		match(Symbol.NEWLINE,stops);
-		admin.NewLine();
+		//admin.NewLine();
 		
 				
 		TextLine(stopSet);
@@ -373,7 +380,7 @@ public class Parser {
 		endD(stopSet);
 		
 		match(Symbol.NEWLINE,stops);
-		admin.NewLine();
+		//admin.NewLine();
 	}
 
 	
@@ -391,7 +398,7 @@ public class Parser {
 		beginME(stopSet);
 		
 		match(Symbol.NEWLINE,stops);
-		admin.NewLine();
+		//admin.NewLine();
 		
 		TextLine(stopSet);
 		
@@ -402,7 +409,7 @@ public class Parser {
 		endME(stopSet);
 		
 		match(Symbol.NEWLINE,stops);
-		admin.NewLine();
+		//admin.NewLine();
 		
 	}
 
@@ -418,8 +425,8 @@ public class Parser {
 		
 		beginIA(stopSet);
 		
-		match(Symbol.NEWLINE,stops);
-		admin.NewLine();
+		match(Symbol.NEWLINE,stopSet);
+		//admin.NewLine();
 		
 		TextLine(stopSet);
 		
@@ -430,7 +437,7 @@ public class Parser {
 		endIA(stopSet);
 		
 		match(Symbol.NEWLINE,stops);
-		admin.NewLine();
+		//admin.NewLine();
 		
 	}
 	
@@ -503,7 +510,7 @@ public class Parser {
 		System.out.print(" ");System.out.print("CoordData");
 		Nnz(stops);
 		match(Symbol.NEWLINE,stops);
-		admin.NewLine();
+		//admin.NewLine();
 		CoordDataLine(stops);
 		
 	}
@@ -519,7 +526,7 @@ public class Parser {
 		Vector<Symbol> stopSet = new Vector<Symbol>();
 		//stopSet.clear();
 		stopSet.addAll(stops);
-		stopSet.add(Symbol.INT);
+		stopSet.add(Symbol.NUMINT);
 		stopSet.addAll(ff.firstOfValues());
 		stopSet.addAll(ff.followOfValues());
 		RowIndex(stopSet);
@@ -538,10 +545,10 @@ public class Parser {
 		Values(stopSet);
 		
 		match(Symbol.NEWLINE,stops);
-		admin.NewLine();
+		//admin.NewLine();
 		
 		if(lookAheadToken.getSymbol() == Symbol.NUMINT)
-			CoordData(stops);
+			CoordDataLine(stops);
 		
 	}
 	
@@ -587,7 +594,7 @@ public class Parser {
 		Values(stopSet);
 		
 		match(Symbol.NEWLINE,stopSet);
-		admin.NewLine();
+		//admin.NewLine();
 		
 		if(in(ff.firstOfValues()))
 			ArrayDataLine(stops);
@@ -603,6 +610,12 @@ public class Parser {
 		{
 			//do nothing
 		}
+		Vector<Symbol> stopSet = new Vector<Symbol>();
+		//stopSet.clear();
+		stopSet.addAll(stops);
+		stopSet.addAll(ff.followOfValues());
+		
+		syntaxCheck(stops);
 	}
 
 	void IAttribute(Vector<Symbol> stops) {
@@ -699,7 +712,10 @@ public class Parser {
 		if(lookAheadToken.getSymbol() == sym)
 		{
 			if(sym == Symbol.NEWLINE)
+			{
+				admin.NewLine();
 				System.out.println();
+			}
 			while(true)
 			{
 				lookAheadToken = scanner.nextToken();
@@ -707,7 +723,7 @@ public class Parser {
 				//newline detected
 				if(lookAheadToken.getSymbol() == Symbol.NEWLINE)
 				{
-					//admin.NewLine();
+					////admin.NewLine();
 					
 					break;
 				}

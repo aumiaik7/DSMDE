@@ -43,11 +43,11 @@ public class Administration {
 			case 2:
 				if(flag == 1)
 				{
-					System.err.println("Syntax Error: Missing '"+sym+"'at line "+lineNo);
+					System.err.println("Syntax Error: Missing '"+sym.getLexeme() +"'at line "+lineNo);
 				}
 				else if(flag == 2)
 				{
-					System.err.println("Syntax Error: Illegal token at line "+lineNo);
+					System.err.println("Syntax Error: Illegal token '"+sym.getLexeme()+"' at line "+lineNo);
 				}
 				break;
 		}

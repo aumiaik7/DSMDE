@@ -250,4 +250,21 @@ public class FirstFollow {
 		return fOfVal;
 	}
 
+	Vector<Symbol>  followOfDocumentation() {
+		// TODO Auto-generated method stub
+		Vector<Symbol> fOftL = firstOfTextLine();
+		Vector<Symbol> fOfComment = followOfComment();
+		
+		Vector<Symbol> merge = new Vector<Symbol>();
+		merge.addAll(fOftL);
+		merge.addAll(fOfComment);
+		return merge;
+	}
+
+	Vector<Symbol> followOfComment() {
+		// TODO Auto-generated method stub
+		Vector<Symbol> fOfdata = firstOfData();
+		return fOfdata;
+	}
+
 }
