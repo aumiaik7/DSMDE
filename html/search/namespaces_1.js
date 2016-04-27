@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['scanner',['scanner',['../namespacescanner.html',1,'']]]
+  ['parser',['parser',['../namespaceparser.html',1,'']]]
 ];

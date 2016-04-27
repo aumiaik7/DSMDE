@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['scanner',['Scanner',['../classscanner_1_1Scanner.html#a344b0265cf89d07cfa090f681453a39b',1,'scanner::Scanner']]]
+  ['getcode',['getCode',['../enumscanner_1_1Symbol.html#ad0bfa41d4413bae1e046812633c59e6a',1,'scanner::Symbol']]],
+  ['getlexeme',['getLexeme',['../enumscanner_1_1Symbol.html#ae986ae2ce7a07522a8ea6a49beace3b2',1,'scanner::Symbol']]],
+  ['getsymbol',['getSymbol',['../classscanner_1_1Token.html#ac5ce0f3d85d8c2a6855cd1b96e16eb83',1,'scanner::Token']]],
+  ['getvalue',['getValue',['../classscanner_1_1Token.html#a6bb7b100208691a296ea3804054488fe',1,'scanner::Token']]]
 ];

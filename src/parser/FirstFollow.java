@@ -7,6 +7,7 @@ import scanner.Symbol;
 
 public class FirstFollow {
 	
+	//methods
 	//Vector<Symbol> firstOfHeader
 	//Vector<Symbol> firstOfBanner
 	//Vector<Symbol> fisrtOfObjectType

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['driverwindow',['DriverWindow',['../classdriver_1_1DriverWindow.html#acc35b31088a5ffe1543c28462b56194f',1,'driver::DriverWindow']]]
+  ['administration',['Administration',['../classdriver_1_1Administration.html#a1e378b8b16a9c1ef1970d4fbebad410b',1,'driver::Administration']]]
 ];
