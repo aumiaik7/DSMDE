@@ -1,7 +1,7 @@
 package symbolTable;
 import java.util.Vector;
-
 import scanner.*;
+import java.util.regex.*;
 
 public class SymbolTable {
 
@@ -116,10 +116,13 @@ public class SymbolTable {
 	//search using token
 	public Token search2(String lex)
 	{
+		//pattern for any integer or real number
+		String regexOfNumber = "[1-9][0-9]*\\.?[0-9]*([Ee][+-]?[0-9]+)?";
+		//Pattern object
 		int position = hashfn(lex);
 		Token tk;
 		tk = hashTable.elementAt(position);
-		if(tk.getSymbol() == Symbol.UNDEFINED)
+		if(tk.getSymbol() == Symbol.UNDEFINED && lex.matches(regexOfNumber))
 		{
 			try{
 				 Double val = Double.parseDouble(lex);

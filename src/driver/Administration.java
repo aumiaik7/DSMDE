@@ -39,6 +39,7 @@ public class Administration {
 		switch(errorType)
 		{
 			case 1:
+				System.err.println("Lexical Error: Undefined Symbol at line "+lineNo);	
 				break;
 			case 2:
 				if(flag == 1)

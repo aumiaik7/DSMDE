@@ -12,6 +12,7 @@ import scanner.Token;
 public class Parser {
 	
 	static int ScanE = 1, ParseE = 2,textLine = 0;
+	boolean undefinedGoer = true;
 	ScanMe scanner;
 	Administration admin;
 	Token lookAheadToken;
@@ -472,6 +473,7 @@ public class Parser {
 	}
 	
 	void Data(Vector<Symbol> stops) {
+		undefinedGoer = false;
 		//System.out.print(" ");//System.out.print("Data");
 		Vector<Symbol> stopSet = new Vector<Symbol>();
 		//stopSet.clear();
@@ -692,6 +694,10 @@ public class Parser {
 			{
 				break;
 			}
+			else if(lookAheadToken.getSymbol() == Symbol.UNDEFINED && !undefinedGoer)
+			{
+				admin.error(ScanE,Symbol.UNDEFINED,1);
+			}
 				
 			lookAheadToken = scanner.nextToken();
 		}
@@ -723,13 +729,18 @@ public class Parser {
 				//newline detected
 				if(lookAheadToken.getSymbol() == Symbol.NEWLINE)
 				{
-					////admin.NewLine();
-					
+					//admin.NewLine();
 					break;
 				}
 				else if(lookAheadToken.getSymbol() != Symbol.UNDEFINED)
 				{
+					//report lexical error
+					
 					break;
+				}
+				else if(lookAheadToken.getSymbol() == Symbol.UNDEFINED && !undefinedGoer)
+				{
+					admin.error(ScanE,sym,1);
 				}
 			}
 		}
@@ -760,6 +771,8 @@ public class Parser {
 			}
 			else if(lookAheadToken.getSymbol() != Symbol.UNDEFINED)
 			{
+				//report lexical error
+				//admin.error(ScanE,Symbol.UNDEFINED,1);
 				break;
 			}
 		}
