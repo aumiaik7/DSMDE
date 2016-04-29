@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Documentation;
 
+import data.DataHolder;
 import driver.Administration;
 import scanner.ScanMe;
 import scanner.Symbol;
@@ -18,10 +19,12 @@ public class Parser {
 	Token lookAheadToken;
 	//Vector<Symbol> stopSet = new Vector<Symbol>();
 	FirstFollow ff = new FirstFollow();
-	public Parser(ScanMe sc, Administration ad) {
+	DataHolder dataHold;
+	public Parser(ScanMe sc, Administration ad, DataHolder data) {
 		// TODO Auto-generated constructor stub
 		scanner = sc;
 		admin = ad;
+		dataHold = data;
 		lookAheadToken();
 	}
 	
@@ -185,9 +188,15 @@ public class Parser {
 	void formatType(Vector<Symbol> stops) {
 		//System.out.print(" ");//System.out.print("formatType");
 		if(lookAheadToken.getSymbol() == Symbol.COORD)
+		{
 			match(Symbol.COORD, stops);
+			dataHold.setCoordOrArray(1);
+		}
 		else if(lookAheadToken.getSymbol() == Symbol.ARRAY)
+		{
 			match(Symbol.ARRAY, stops);
+			dataHold.setCoordOrArray(2);
+		}
 		else
 		{
 			//error
@@ -557,18 +566,20 @@ public class Parser {
 	
 	void NRows(Vector<Symbol> stops) {
 		//System.out.print(" ");//System.out.print("NRows");
-		Integer(stops);
+		int rows = Integer(stops);
+		dataHold.setRows(rows);
 	}
 
 	void NCols(Vector<Symbol> stops) {
 		//System.out.print(" ");//System.out.print("NCols");
-		Integer(stops);
-		
+		int cols = Integer(stops);
+		dataHold.setCols(cols);
 	}
 	
 	void Nnz(Vector<Symbol> stops) {
 		//System.out.print(" ");//System.out.print("Nnz");
-		Integer(stops);
+		int nonZero = Integer(stops);
+		dataHold.setNzN(nonZero);
 	}
 	
 	void RowIndex(Vector<Symbol> stops) {
@@ -638,9 +649,13 @@ public class Parser {
 	}
 
 
-	void Integer(Vector<Symbol> stops) {
+	int Integer(Vector<Symbol> stops) {
 		//System.out.print(" ");//System.out.print("Integer");
-		match(Symbol.NUMINT,stops);
+		Token tempTok = lookAheadToken;
+		if(match(Symbol.NUMINT,stops))
+			return (int)tempTok.getValue();
+		else 
+			return -1; 
 		
 	}
 	
@@ -713,10 +728,12 @@ public class Parser {
 	}
 	
 	
-	void match(Symbol sym, Vector<Symbol> stops) {
+	boolean match(Symbol sym, Vector<Symbol> stops) {
 		// TODO Auto-generated method stub
+		boolean isMatched = false;
 		if(lookAheadToken.getSymbol() == sym)
 		{
+			isMatched = true;
 			if(sym == Symbol.NEWLINE)
 			{
 				admin.NewLine();
@@ -754,6 +771,7 @@ public class Parser {
 		//check whether the look ahead symbol is valid or not
 		//if not crave for valid lookahead symbol
 		syntaxCheck(stops);
+		return isMatched;
 	}
 	
 	

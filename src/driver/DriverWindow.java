@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import data.DataHolder;
 import parser.*;
 
 import scanner.ScanMe;
@@ -99,7 +100,8 @@ public class DriverWindow extends JFrame {
 				SymbolTable st = new SymbolTable();
 				ScanMe scan = new ScanMe(sourceFile,st);
 				Administration admin = new Administration(scan,st);
-				Parser parser = new Parser(scan, admin); 
+				DataHolder dataHolder = new DataHolder();
+				Parser parser = new Parser(scan,admin,dataHolder); 
 				parser.DsmdeFormat(Symbol.EOF);
 				//admin.start();
 				//scan.read();
