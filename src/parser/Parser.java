@@ -534,28 +534,37 @@ public class Parser {
 	
 	void CoordDataLine(Vector<Symbol> stops) {
 		//System.out.print(" ");//System.out.print("CoordDataLine");
+		//initialize the matrix
+		dataHold.initMatrix();
+		
 		Vector<Symbol> stopSet = new Vector<Symbol>();
 		//stopSet.clear();
 		stopSet.addAll(stops);
 		stopSet.add(Symbol.NUMINT);
 		stopSet.addAll(ff.firstOfValues());
 		stopSet.addAll(ff.followOfValues());
-		RowIndex(stopSet);
+		int rowIndex = RowIndex(stopSet);
 		
 		stopSet.clear();
 		stopSet.addAll(stops);
 		stopSet.addAll(ff.firstOfValues());
 		stopSet.addAll(ff.followOfValues());
 		
-		ColIndex(stopSet);
+		int colIndex = ColIndex(stopSet);
 		
 		stopSet.clear();
 		stopSet.addAll(stops);
 		stopSet.addAll(ff.followOfValues());
 		
-		Values(stopSet);
+		Vector<Double> values = Values(stopSet);
 		
 		match(Symbol.NEWLINE,stops);
+		
+		if(rowIndex != -1 && colIndex !=0)
+		{
+			dataHold.setItem(rowIndex,colIndex,values);	
+		}
+		
 		//admin.NewLine();
 		
 		if(lookAheadToken.getSymbol() == Symbol.NUMINT)
@@ -582,15 +591,15 @@ public class Parser {
 		dataHold.setNzN(nonZero);
 	}
 	
-	void RowIndex(Vector<Symbol> stops) {
+	int RowIndex(Vector<Symbol> stops) {
 		//System.out.print(" ");//System.out.print("RowIndex");
-		Integer(stops);
+		return Integer(stops);
 		
 	}
 
-	void ColIndex(Vector<Symbol> stops) {
+	int ColIndex(Vector<Symbol> stops) {
 		//System.out.print(" ");//System.out.print("ColIndex");
-		Integer(stops);
+		return Integer(stops);
 		
 	}
 	
@@ -613,11 +622,13 @@ public class Parser {
 			ArrayDataLine(stops);
 	}
 	
-	void Values(Vector<Symbol> stops) {
+	Vector<Double> Values(Vector<Symbol> stops) {
 		//System.out.print(" ");//System.out.print("Values");
+		Vector<Double> values = new Vector<Double>();
 		if(in(ff.firstOfIAttribute()))
 		{
-			IAttribute(stops);
+			Vector<Double> val = new Vector<Double>();
+			values = IAttribute(stops,val);
 		}
 		else if(in(ff.followOfValues()))
 		{
@@ -629,23 +640,30 @@ public class Parser {
 		stopSet.addAll(ff.followOfValues());
 		
 		syntaxCheck(stops);
+		return values;
 	}
 
-	void IAttribute(Vector<Symbol> stops) {
+	Vector<Double> IAttribute(Vector<Symbol> stops, Vector<Double> values) {
 		//System.out.print(" ");//System.out.print("IAttribute");
 		if(in(ff.firstOfInteger()))
 		{
-			Integer(stops);
+			int val =  Integer(stops);
+			if (val != -1)
+				values.add((double)val);
 		}
 		else if(in(ff.firstOfReal()))
 		{
-			Real(stops);
+			double val = Real(stops);
+			if (val != -1.0)
+				values.add(val);
 		}
 		
 		if(in(ff.firstOfIAttribute()))
 		{
-			IAttribute(stops);
+			IAttribute(stops,values);
 		}
+		
+	return values;
 	}
 
 
@@ -659,9 +677,13 @@ public class Parser {
 		
 	}
 	
-	void Real(Vector<Symbol> stops) {
+	double Real(Vector<Symbol> stops) {
 		//System.out.print(" ");//System.out.print("Real");
-		match(Symbol.NUMDOUBLE,stops);
+		Token tempTok = lookAheadToken;
+		if(match(Symbol.NUMDOUBLE,stops))
+			return (double)tempTok.getValue();
+		else 
+			return -1.0;
 	}
 
 	
