@@ -535,7 +535,8 @@ public class Parser {
 	void CoordDataLine(Vector<Symbol> stops) {
 		//System.out.print(" ");//System.out.print("CoordDataLine");
 		//initialize the matrix
-		dataHold.initMatrix();
+		if(!dataHold.isInitialized())
+			dataHold.initMatrix();
 		
 		Vector<Symbol> stopSet = new Vector<Symbol>();
 		//stopSet.clear();
@@ -569,7 +570,8 @@ public class Parser {
 		
 		if(lookAheadToken.getSymbol() == Symbol.NUMINT)
 			CoordDataLine(stops);
-		
+		else
+			dataHold.setItem(rowIndex+1,colIndex,values);
 	}
 	
 	
