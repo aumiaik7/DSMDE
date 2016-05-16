@@ -129,8 +129,8 @@ public class FirstFollow {
 		// TODO Auto-generated method stub
 		Vector<Symbol> fOfStruct = new Vector<Symbol>();
 		fOfStruct.add(Symbol.GENERAL);
-		fOfStruct.add(Symbol.SYMETRIC);
-		fOfStruct.add(Symbol.SKSYMETRIC);
+		fOfStruct.add(Symbol.SYMMETRIC);
+		fOfStruct.add(Symbol.SKSYMMETRIC);
 		fOfStruct.add(Symbol.HERMITIAN);
 		return fOfStruct;
 	}

@@ -1,10 +1,10 @@
 package data;
 
-public class ColnValue {
+public class CoordColnValue {
 	private int column;
 	private double value;
 	//constructor
-	public ColnValue(int col, double val) {
+	public CoordColnValue(int col, double val) {
 		// TODO Auto-generated constructor stub
 		column = col;
 		value = val;

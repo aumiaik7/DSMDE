@@ -5,6 +5,10 @@ import java.util.Vector;
 import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Documentation;
 
 import data.DataHolder;
+import data.HeaderFields.FormatType;
+import data.HeaderFields.ObjectType;
+import data.HeaderFields.Orientn;
+import data.HeaderFields.Structure;
 import driver.Administration;
 import scanner.ScanMe;
 import scanner.Symbol;
@@ -103,13 +107,26 @@ public class Parser {
 	void objectType(Vector<Symbol> stops) {
 		//System.out.print(" ");//System.out.print("objectType");
 		if(lookAheadToken.getSymbol() == Symbol.MATRIX)
+		{
 			match(Symbol.MATRIX, stops);
+			dataHold.setObjectType(ObjectType.MATRIX);
+		}
 		else if(lookAheadToken.getSymbol() == Symbol.DSM)
+		{
 			match(Symbol.DSM, stops);
+			dataHold.setObjectType(ObjectType.DSM);
+		}
 		else if(lookAheadToken.getSymbol() == Symbol.MDM)
+		{
 			match(Symbol.MDM, stops);
+			dataHold.setObjectType(ObjectType.MDM);
+		}
 		else if(lookAheadToken.getSymbol() == Symbol.DMM)
+		{
 			match(Symbol.DMM, stops);
+			dataHold.setObjectType(ObjectType.DMM);
+		}
+		
 	}
 	
 	void Qualifiers(Vector<Symbol> stops) {
@@ -190,12 +207,12 @@ public class Parser {
 		if(lookAheadToken.getSymbol() == Symbol.COORD)
 		{
 			match(Symbol.COORD, stops);
-			dataHold.setCoordOrArray(1);
+			dataHold.setFormatType(FormatType.COORDINATE);
 		}
 		else if(lookAheadToken.getSymbol() == Symbol.ARRAY)
 		{
 			match(Symbol.ARRAY, stops);
-			dataHold.setCoordOrArray(2);
+			dataHold.setFormatType(FormatType.ARRAY);
 		}
 		else
 		{
@@ -221,13 +238,25 @@ public class Parser {
 	void structure(Vector<Symbol> stops) {
 		//System.out.print(" ");//System.out.print("structure");
 		if(lookAheadToken.getSymbol() == Symbol.GENERAL)
+		{
 			match(Symbol.GENERAL, stops);
-		else if(lookAheadToken.getSymbol() == Symbol.SYMETRIC)
-			match(Symbol.SYMETRIC, stops);
-		else if(lookAheadToken.getSymbol() == Symbol.SKSYMETRIC)
-			match(Symbol.SKSYMETRIC, stops);
+			dataHold.setStructure(Structure.GENERAL);
+		}
+		else if(lookAheadToken.getSymbol() == Symbol.SYMMETRIC)
+		{
+			match(Symbol.SYMMETRIC, stops);
+			dataHold.setStructure(Structure.SYMMETRIC);
+		}
+		else if(lookAheadToken.getSymbol() == Symbol.SKSYMMETRIC)
+		{
+			match(Symbol.SKSYMMETRIC, stops);
+			dataHold.setStructure(Structure.SKSYMMETRIC);
+		}
 		else 
+		{
 			match(Symbol.HERMITIAN, stops);
+			dataHold.setStructure(Structure.HERMITIAN);
+		}
 	}
 
 	void NDomain(Vector<Symbol> stops) {
@@ -237,15 +266,22 @@ public class Parser {
 	
 	void NIAttribute(Vector<Symbol> stops) {
 		//System.out.print(" ");//System.out.print("NIAttribute");
-		Integer(stops);
+		int niAttr = Integer(stops);
+		dataHold.setNiAttribute(niAttr);
 	}
 	
 	void orientn(Vector<Symbol> stops) {
 		//System.out.print(" ");//System.out.print("orientn");
 		if(lookAheadToken.getSymbol() == Symbol.IC)
+		{
 			match(Symbol.IC, stops);
+			dataHold.setOrientn(Orientn.IC);
+		}
 		else
+		{
 			match(Symbol.IR, stops);
+			dataHold.setOrientn(Orientn.IR);
+		}
 	}
 	
 	void Comments(Vector<Symbol> stops) {

@@ -3,8 +3,8 @@ package scanner;
 public enum Symbol {
 	MM(256,"%%MatrixMarket"),MATRIX(257,"Matrix"),DSM(258,"DSM"),MDM(259,"MDM"),DMM(260,"DMM")
 	,COORD(261,"Coordinate"),ARRAY(262,"Array"),INT(263,"Integer"),REAL(264,"Real")
-	,COMPLEX(265,"Complex"),PATTERN(266,"Pattern"),GENERAL(267,"General"),SYMETRIC(268,"Symmetric")
-	,SKSYMETRIC(269,"Skew-Symmetric'"),HERMITIAN(270,"Hermitian"),IC(271,"IC"),IR(272,"IR")
+	,COMPLEX(265,"Complex"),PATTERN(266,"Pattern"),GENERAL(267,"General"),SYMMETRIC(268,"Symmetric")
+	,SKSYMMETRIC(269,"Skew-Symmetric'"),HERMITIAN(270,"Hermitian"),IC(271,"IC"),IR(272,"IR")
 	,BDOMAIN(273,"%beginDomain"),EDOMAIN(274,"%endDomain"),BMODE(275,"%beginModElement")
 	,EMODE(276,"%endModElement"),BATTRIB(277,"%beginAttribute"),EATTRIB(278,"%endAttribute")
 	,COMMENT(279,"textLine"),PLUS(280,"+"),MINUS(281,"-"),E(282,"e"),NUMINT(283,"num int")
